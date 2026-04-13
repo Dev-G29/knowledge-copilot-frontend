@@ -643,10 +643,33 @@ a {
   color: #86efac;
 }
 
+.auth-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.auth-switch p {
+  margin: 0;
+  color: rgb(11, 11, 11);
+  font-size: 0.95rem;
+}
+
+.auth-switch a{
+  color: rgb(11, 11, 11);
+}
+
+
+.auth-switch a:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
 .primary-button:disabled,
 .chat-input-area button:disabled {
   background: linear-gradient(135deg, rgba(59, 130, 246, 0.35) 0%, rgba(37, 99, 235, 0.35) 100%);
-  color: rgba(239, 246, 255, 0.7);
+  color: rgba(251, 239, 255, 0.7);
   cursor: not-allowed;
   box-shadow: none;
 }

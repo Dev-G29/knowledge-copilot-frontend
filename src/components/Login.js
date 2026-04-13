@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { login } from '../services/api';
 
 const getAccessToken = (data) =>
@@ -7,7 +8,11 @@ const getAccessToken = (data) =>
 const getUsername = (data) => data?.username ?? data?.data?.username ?? '';
 
 const getRoles = (data) => {
-  const roles = data?.roles ?? data?.data?.roles ?? [];
+  const roles =
+    data?.roles ?? data?.data?.roles ?? data?.role ?? data?.data?.role ?? [];
+  if (typeof roles === 'string') {
+    return [roles];
+  }
   return Array.isArray(roles) ? roles : [];
 };
 
@@ -33,13 +38,18 @@ function Login({ onLogin }) {
         throw new Error('Missing access token');
       }
 
+      const role = roles.length > 0 ? roles[0] : '';
+
       localStorage.setItem('token', accessToken);
+      localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('username', username);
+      localStorage.setItem('role', role);
       localStorage.setItem('roles', JSON.stringify(roles));
 
       onLogin({
         token: accessToken,
         username,
+        role,
         roles,
       });
     } catch (requestError) {
@@ -87,6 +97,13 @@ function Login({ onLogin }) {
         <button className="primary-button" type="submit" disabled={isLoading}>
           {isLoading ? 'Logging in...' : 'Login'}
         </button>
+
+        <div className="auth-switch">
+          <p>New here?</p>
+          <Link className="secondary-button" to="/register">
+            Register
+          </Link>
+        </div>
       </form>
     </section>
   );

@@ -6,6 +6,7 @@ import Contact from './components/Contact';
 import HowToUse from './components/HowToUse';
 import Login from './components/Login';
 import Navbar from './components/Navbar';
+import Register from './components/Register';
 import Upload from './components/Upload';
 import './styles/App.css';
 
@@ -18,10 +19,19 @@ const getStoredRoles = () => {
 
   try {
     const parsedRoles = JSON.parse(storedRoles);
-    return Array.isArray(parsedRoles) ? parsedRoles : [];
+    if (Array.isArray(parsedRoles)) {
+      return parsedRoles;
+    }
+    if (typeof parsedRoles === 'string') {
+      return [parsedRoles];
+    }
   } catch (error) {
-    return [];
+    if (typeof storedRoles === 'string') {
+      return [storedRoles];
+    }
   }
+
+  return [];
 };
 
 function Home({ token, roles }) {
@@ -48,20 +58,18 @@ function Home({ token, roles }) {
 
 function AuthenticatedApp({ token, roles, username, onLogout }) {
   return (
-    <BrowserRouter>
-      <div className="app-shell authenticated-shell">
-        <Navbar onLogout={onLogout} username={username} />
-        <div className="app-body">
-          <Routes>
-            <Route path="/" element={<Home token={token} roles={roles} />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/how-to-use" element={<HowToUse />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </div>
+    <div className="app-shell authenticated-shell">
+      <Navbar onLogout={onLogout} username={username} />
+      <div className="app-body">
+        <Routes>
+          <Route path="/" element={<Home token={token} roles={roles} />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/how-to-use" element={<HowToUse />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </div>
-    </BrowserRouter>
+    </div>
   );
 }
 
@@ -78,28 +86,34 @@ function App() {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('accessToken');
     localStorage.removeItem('roles');
+    localStorage.removeItem('role');
     localStorage.removeItem('username');
     setToken(null);
     setRoles([]);
     setUsername('');
   };
 
-  if (!token) {
-    return (
-      <main className="app-shell">
-        <Login onLogin={handleLogin} />
-      </main>
-    );
-  }
-
   return (
-    <AuthenticatedApp
-      token={token}
-      roles={roles}
-      username={username}
-      onLogout={handleLogout}
-    />
+    <BrowserRouter>
+      {token ? (
+        <AuthenticatedApp
+          token={token}
+          roles={roles}
+          username={username}
+          onLogout={handleLogout}
+        />
+      ) : (
+        <main className="app-shell">
+          <Routes>
+            <Route path="/login" element={<Login onLogin={handleLogin} />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
+        </main>
+      )}
+    </BrowserRouter>
   );
 }
 

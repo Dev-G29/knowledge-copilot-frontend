@@ -18,6 +18,13 @@ export const login = (data) =>
     },
   });
 
+export const register = (data) =>
+  api.post('/auth/register', data, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
 export const chat = (data, token) =>
   api.post('/chat/query', data, {
     headers: {
