@@ -5,6 +5,7 @@
 
 # production
 /build
+/dist
 
 # testing
 /coverage
@@ -27,3 +28,6 @@ yarn-error.log*
 
 # OS
 .DS_Store
+
+graphify-out/
+.claude/

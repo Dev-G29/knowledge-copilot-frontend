@@ -1,0 +1,338 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/inter';
+@plugin '@tailwindcss/typography';
+
+/* Dark mode follows a .dark class on <html> (set by ThemeProvider / the inline script in index.html). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---- Semantic colour tokens ------------------------------------------------ */
+:root {
+  --bg: #ffffff;
+  --bg-subtle: #f6f8fb;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --border: #e3e8ef;
+  --border-strong: #cdd5df;
+  --fg: #0f172a;
+  --fg-muted: #526077;
+  --fg-subtle: #8492a6;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-fg: #ffffff;
+  --primary-soft: #eaf1ff;
+  --accent: #0891b2;
+  --danger: #dc2626;
+  --danger-soft: #fef2f2;
+  --success: #059669;
+  --success-soft: #ecfdf5;
+  --warning: #d97706;
+  --warning-soft: #fffbeb;
+  --ring: rgb(37 99 235 / 0.35);
+  --shadow-color: 220 40% 20%;
+}
+
+.dark {
+  --bg: #0b1120;
+  --bg-subtle: #0f172a;
+  --surface: #111a2e;
+  --surface-raised: #16213a;
+  --border: #1f2b44;
+  --border-strong: #2c3a57;
+  --fg: #e8edf6;
+  --fg-muted: #9aa8c0;
+  --fg-subtle: #64748b;
+  --primary: #3b82f6;
+  --primary-hover: #60a5fa;
+  --primary-fg: #ffffff;
+  --primary-soft: rgb(59 130 246 / 0.14);
+  --accent: #22d3ee;
+  --danger: #f87171;
+  --danger-soft: rgb(248 113 113 / 0.12);
+  --success: #34d399;
+  --success-soft: rgb(52 211 153 / 0.12);
+  --warning: #fbbf24;
+  --warning-soft: rgb(251 191 36 / 0.12);
+  --ring: rgb(96 165 250 / 0.45);
+  --shadow-color: 222 60% 2%;
+}
+
+@theme inline {
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --color-bg: var(--bg);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-fg: var(--primary-fg);
+  --color-primary-soft: var(--primary-soft);
+  --color-accent: var(--accent);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-ring: var(--ring);
+
+  --shadow-soft: 0 1px 2px hsl(var(--shadow-color) / 0.06), 0 4px 16px -4px hsl(var(--shadow-color) / 0.1);
+  --shadow-lifted: 0 2px 4px hsl(var(--shadow-color) / 0.06), 0 16px 40px -12px hsl(var(--shadow-color) / 0.25);
+
+  --animate-blink: blink 1s steps(2, start) infinite;
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+}
+
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* ---- Base ------------------------------------------------------------------ */
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-bg font-sans text-fg;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+
+  ::selection {
+    background: var(--primary-soft);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+}
+
+/* ---- Utilities --------------------------------------------------------------- */
+@utility text-gradient {
+  background-image: linear-gradient(110deg, #3b82f6 0%, #06b6d4 55%, #22d3ee 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility bg-brand {
+  background-image: linear-gradient(135deg, #2563eb 0%, #0ea5e9 60%, #22d3ee 100%);
+}
+
+/* Faint dotted grid used behind marketing sections. */
+@utility bg-grid {
+  background-image: radial-gradient(circle at 1px 1px, var(--border-strong) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+@utility skeleton {
+  background: linear-gradient(90deg, var(--bg-subtle) 0%, var(--border) 50%, var(--bg-subtle) 100%);
+  background-size: 200% 100%;
+  animation: var(--animate-shimmer);
+}
+
+/* ---- Markdown answers ---------------------------------------------------------- */
+.prose-answer {
+  @apply prose prose-slate max-w-none dark:prose-invert;
+  --tw-prose-body: var(--fg);
+  --tw-prose-headings: var(--fg);
+  --tw-prose-links: var(--primary);
+  --tw-prose-bold: var(--fg);
+  --tw-prose-code: var(--fg);
+  --tw-prose-quotes: var(--fg-muted);
+  --tw-prose-bullets: var(--fg-subtle);
+  --tw-prose-counters: var(--fg-subtle);
+  --tw-prose-hr: var(--border);
+  --tw-prose-th-borders: var(--border-strong);
+  --tw-prose-td-borders: var(--border);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.prose-answer :where(p, ul, ol) {
+  margin-top: 0.6em;
+  margin-bottom: 0.6em;
+}
+
+.prose-answer :where(h1, h2, h3, h4) {
+  margin-top: 1.1em;
+  margin-bottom: 0.4em;
+  font-weight: 650;
+}
+
+.prose-answer :where(h1) {
+  font-size: 1.25em;
+}
+
+.prose-answer :where(h2) {
+  font-size: 1.12em;
+}
+
+.prose-answer :where(h3, h4) {
+  font-size: 1em;
+}
+
+.prose-answer > :first-child {
+  margin-top: 0;
+}
+
+.prose-answer > :last-child {
+  margin-bottom: 0;
+}
+
+.prose-answer :where(code):not(pre code) {
+  @apply rounded-md border border-border bg-bg-subtle px-1.5 py-0.5 text-[0.85em] font-medium;
+}
+
+.prose-answer :where(code):not(pre code)::before,
+.prose-answer :where(code):not(pre code)::after {
+  content: none;
+}
+
+.prose-answer :where(pre) {
+  @apply my-3 rounded-xl border border-border bg-bg-subtle p-4 text-[0.85em] leading-relaxed;
+  color: var(--fg);
+}
+
+.prose-answer :where(table) {
+  @apply my-3 block overflow-x-auto text-sm;
+}
+
+/* Blinking caret at the end of an answer while it streams in. */
+.streaming-cursor .prose-answer > :where(p, h1, h2, h3, h4, blockquote):last-child::after,
+.streaming-cursor .prose-answer > :where(ul, ol):last-child > li:last-child::after {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 1.05em;
+  margin-left: 3px;
+  transform: translateY(3px);
+  border-radius: 2px;
+  background: var(--primary);
+  animation: var(--animate-blink);
+}
+
+/* ---- Syntax highlighting (highlight.js classes, themed for light & dark) ---------- */
+.hljs-comment,
+.hljs-quote {
+  color: var(--fg-subtle);
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-section,
+.hljs-link {
+  color: #7c3aed;
+}
+
+.hljs-string,
+.hljs-regexp,
+.hljs-addition,
+.hljs-attribute,
+.hljs-meta .hljs-string {
+  color: #047857;
+}
+
+.hljs-number,
+.hljs-built_in,
+.hljs-type,
+.hljs-params {
+  color: #b45309;
+}
+
+.hljs-title,
+.hljs-title.function_,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+  color: #1d4ed8;
+}
+
+.hljs-attr,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-property {
+  color: #0e7490;
+}
+
+.hljs-deletion {
+  color: #b91c1c;
+}
+
+.dark .hljs-keyword,
+.dark .hljs-selector-tag,
+.dark .hljs-literal,
+.dark .hljs-section,
+.dark .hljs-link {
+  color: #c4b5fd;
+}
+
+.dark .hljs-string,
+.dark .hljs-regexp,
+.dark .hljs-addition,
+.dark .hljs-attribute,
+.dark .hljs-meta .hljs-string {
+  color: #6ee7b7;
+}
+
+.dark .hljs-number,
+.dark .hljs-built_in,
+.dark .hljs-type,
+.dark .hljs-params {
+  color: #fcd34d;
+}
+
+.dark .hljs-title,
+.dark .hljs-title.function_,
+.dark .hljs-name,
+.dark .hljs-selector-id,
+.dark .hljs-selector-class {
+  color: #93c5fd;
+}
+
+.dark .hljs-attr,
+.dark .hljs-variable,
+.dark .hljs-template-variable,
+.dark .hljs-property {
+  color: #67e8f9;
+}
+
+.dark .hljs-deletion {
+  color: #fca5a5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
