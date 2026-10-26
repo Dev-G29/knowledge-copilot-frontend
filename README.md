@@ -1,70 +1,57 @@
-# Getting Started with Create React App
+# Knowledge Copilot: frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+React UI for Knowledge Copilot, a RAG assistant that answers questions from your own documents and cites its sources. The API lives in [knowledge-copilot-backend](https://github.com/Dev-G29/knowledge-copilot-backend).
 
-## Available Scripts
+**Stack:** React 19 · Vite · Tailwind CSS v4 · React Router · react-markdown + highlight.js · Motion · Sonner
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- **Landing, About and Contact pages**, with light and dark themes (follows the system setting, with a toggle).
+- **Chat** in a ChatGPT-style layout:
+  - answers stream in token by token over server-sent events, with a Stop button;
+  - Markdown rendering with code highlighting;
+  - source chips that expand to show the passage each answer used, plus a confidence badge;
+  - conversations you can link to (`/chat/:id`).
+- **Sidebar** with conversations grouped by date, search, inline rename and delete.
+- **Knowledge base**:
+  - everyone sees the list of documents and stats;
+  - admins also get drag-and-drop upload with per-file progress, and delete.
+- **Auth**: inline validation; registering signs you straight in; an expired token signs you out with a message.
+- **Responsive** down to 360 px, with a drawer sidebar on mobile.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Run locally
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```bash
+npm install
+cp .env.example .env.local   # VITE_API_BASE_URL=http://localhost:8080
+npm run dev                  # http://localhost:5173
+```
 
-### `npm test`
+You need the backend running on port 8080. With no Gemini key, run `./mvnw spring-boot:test-run` in the backend repo: it starts a throwaway pgvector database and a demo AI, with admin login `admin@example.com` / `admin12345`.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+| Script | What it does |
+|---|---|
+| `npm run dev` | Dev server with hot reload |
+| `npm run build` | Production build into `dist/` |
+| `npm run preview` | Serve the production build |
+| `npm test` | Unit tests (Vitest) |
+| `npm run lint` | ESLint |
 
-### `npm run build`
+## Deploy to Vercel
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. In Vercel: **Add New → Project** → import `knowledge-copilot-frontend`. The framework (Vite) is detected; `vercel.json` adds the SPA rewrite and asset caching.
+2. **Environment variables**: `VITE_API_BASE_URL` = `https://<your-api>.duckdns.org` (no trailing slash).
+3. Deploy, then add the Vercel URL to the backend's `CORS_ALLOWED_ORIGINS`. Preview deployments can be allowed with a pattern such as `https://knowledge-copilot-*.vercel.app`.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Vercel serves static files from its CDN, so the frontend never cold-starts. Every push to `main` redeploys automatically.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Project layout
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```
+src/
+  lib/          api.js (axios + auth interceptor), sse.js (streaming client), format.js
+  context/      AuthContext, ThemeContext, ConversationsContext
+  components/   ui/ (Button, Field, Dialog, Menu, Badge…), layout/ (AppShell, Sidebar, PublicLayout), brand/
+  features/     chat/, documents/, auth/
+  pages/        Landing, About, Contact, NotFound
+```
